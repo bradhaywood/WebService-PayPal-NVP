@@ -223,11 +223,11 @@ Your PayPal username
 
 =head3 pass
 
-Your PayPal password
+PayPal API password
 
 =head3 sig
 
-Google API signature
+PayPal API signature
 
 =head2 Optional
 
