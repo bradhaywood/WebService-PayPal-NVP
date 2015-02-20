@@ -7,7 +7,7 @@ WebService::PayPal::NVP - PayPal NVP API
 A pure object oriented interface to PayPal's NVP API (Name-Value Pair). A lot of the logic in this module was taken from [Business::PayPal::NVP](https://metacpan.org/pod/Business::PayPal::NVP). I re-wrote it because it wasn't working with Catalyst adaptors and I couldn't save instances of it in Moose-type accessors. Otherwise it worked fine. So if you don't need that kind of support you should visit [Business::PayPal::NVP](https://metacpan.org/pod/Business::PayPal::NVP)!.
 Another difference with this module compared to Business::PayPal::NVP is that the keys may be passed as lowercase. Also, a response will return a WebService::PayPal::NVP::Response object where the response values are methods. Timestamps will automatically be converted to DateTime objects for your convenience.
 
-# SYNTAX
+# SYNOPSIS
 
 ```perl
 my $nvp = WebService::PayPal::NVP->new(
@@ -15,6 +15,8 @@ my $nvp = WebService::PayPal::NVP->new(
     pwd    => 'xxx',
     sig    => 'xxxxxxx',
     branch => 'sandbox',
+    # optional:
+    ua     => LWP::UserAgent->new( ... ),
 );
 
 my $res = $nvp->set_express_checkout({
@@ -62,23 +64,51 @@ else {
 }
 ```
 
+# ATTRIBUTES
+
+Upon creating an instance of WebService::PayPal::NVP, 3 attributes are mandatory, and there's a few you can set yourself
+
+## Mandatory
+
+### user
+
+Your PayPal username
+
+### pass
+
+PayPal API password
+
+### sig
+
+PayPal API signature
+
+## Optional
+
+### url
+
+You might not need this, but if for some reason the URL for PayPal's NVP service changes and I can't update in time, you can set it yourself.
+
+### branch
+
+By default, this will be set to sandbox. Once you want to go live, set the branch to 'live'. 
+It will also be sandbox unless you specify otherwise for obvious reasons..
+
+### api\_ver
+
+You can change the API version, but I'd recommend you leave it as this module was made for the version that is currently set!
+
+### ua
+
+This attribute allows you to provide your own UserAgent.  This object must be of
+the [LWP::UserAgent](https://metacpan.org/pod/LWP::UserAgent) family, so [WWW::Mechanize](https://metacpan.org/pod/WWW::Mechanize) modules will also work.
+
+```perl
+my $nvp = WebService::PayPal::NVP->new( ua => LWP::UserAgent->new(...) );
+```
+
 # METHODS
 
-## create\_recurring\_payments\_profile( $HashRef )
-
-## do\_direct\_payment( $HashRef )
-
-## do\_express\_checkout\_payment( $HashRef )
-
-## get\_express\_checkout\_details( $HashRef )
-
-## manage\_recurring\_payments\_profile\_status( $HashRef )
-
-## mass\_pay( $HashRef )
-
-## refund\_transaction( $HashRef )
-
-## set\_express\_checkout( $HashRef )
+Please see the role [WebService::PayPal::NVP::Requests](https://metacpan.org/pod/WebService::PayPal::NVP::Requests) for available PalPal methods
 
 # TESTING
 
@@ -102,6 +132,10 @@ Brad Haywood <brad@geeksware.com>
 
 A lot of this module was taken from [Business::PayPal::NVP](https://metacpan.org/pod/Business::PayPal::NVP) by Scott Wiersdorf. 
 It was only rewritten in order to work properly in [Catalyst::Model::Adaptor](https://metacpan.org/pod/Catalyst::Model::Adaptor).
+
+## THANKS
+
+I'd like to thank Olaf Alders for his contributions to this project!
 
 # LICENSE
 
