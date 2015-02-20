@@ -33,6 +33,12 @@ sub create_recurring_payments_profile {
     $self->_do_request($args);
 }
 
+sub get_recurring_payments_profile_details {
+    my ($self, $args) = @_;
+    $args->{method} = 'GetRecurringPaymentsProfileDetails';
+    $self->_do_request($args);
+}
+
 sub manage_recurring_payments_profile_status {
     my ($self, $args) = @_;
     $args->{method} = 'ManageRecurringPaymentsProfileStatus';
@@ -60,6 +66,8 @@ WebService::PayPal::NVP::Requests - The PayPal methods for WebService::PayPal::N
 This is a Moo role containing all of the methods used to contact the PayPal NVP API. L<WebService::PayPal::NVP> consumes this.
 
 =head2 create_recurring_payments_profile( $HashRef )
+
+=head2 get_recurring_payments_profile_details( $HashRef )
 
 =head2 do_direct_payment( $HashRef )
 
