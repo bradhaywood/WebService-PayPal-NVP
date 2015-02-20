@@ -1,5 +1,7 @@
 Revision history for Perl module WebService::PayPal::NVP
 
+0.004 2015-02-20
+ - Internal change: Moved all the PayPal methods into a role to separate from the main logic
  - Allow a custom UserAgent to be provided to constructor (Olaf Alders)
  - Add get_recurring_payments_profile_details() method (Olaf Alders)
 
