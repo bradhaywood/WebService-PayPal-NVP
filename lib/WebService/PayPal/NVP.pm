@@ -9,7 +9,7 @@ use WebService::PayPal::NVP::Response;
 
 with 'WebService::PayPal::NVP::Requests';
 
-our $VERSION = '0.003';
+our $VERSION = '0.004';
 
 has 'errors' => (
     is => 'rw',
