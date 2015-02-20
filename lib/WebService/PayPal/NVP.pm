@@ -7,6 +7,8 @@ use MooX::Types::MooseLike::Base qw( InstanceOf );
 use URI::Escape qw/uri_escape uri_escape_utf8 uri_unescape/;
 use WebService::PayPal::NVP::Response;
 
+with 'WebService::PayPal::NVP::Requests';
+
 our $VERSION = '0.003';
 
 has 'errors' => (
@@ -44,6 +46,7 @@ sub BUILDARGS {
 
     return \%args;
 }
+
 sub _build_ua {
     my $self = shift;
 
@@ -83,7 +86,7 @@ sub _do_request {
     my $res_object = WebService::PayPal::NVP::Response->new(
         branch => $self->branch
     );
-;
+
     if ($resp->{ACK} ne 'Success') {
         $res_object->errors([]);
         my $i = 0;
@@ -140,54 +143,6 @@ sub _build_content {
     return (join '&', @args) || '';
 }
 
-sub set_express_checkout {
-    my ($self, $args) = @_;
-    $args->{method} = 'SetExpressCheckout';
-    $self->_do_request($args);
-}
-
-sub do_express_checkout_payment {
-    my ($self, $args) = @_;
-    $args->{method} = 'DoExpressCheckoutPayment';
-    $self->_do_request($args);
-}
-
-sub get_express_checkout_details {
-    my ($self, $args) = @_;
-    $args->{method} = 'GetExpressCheckoutDetails';
-    $self->_do_request($args);
-}
-
-sub do_direct_payment {
-    my ($self, $args) = @_;
-    $args->{method} = 'DoDirectPayment';
-    $self->_do_request($args);
-}
-
-sub create_recurring_payments_profile {
-    my ($self, $args) = @_;
-    $args->{method} = 'CreateRecurringPaymentsProfile';
-    $self->_do_request($args);
-}
-
-sub manage_recurring_payments_profile_status {
-    my ($self, $args) = @_;
-    $args->{method} = 'ManageRecurringPaymentsProfileStatus';
-    $self->_do_request($args);
-}
-
-sub mass_pay {
-    my ($self, $args) = @_;
-    $args->{method} = 'MassPay';
-    $self->_do_request($args);
-}
-
-sub refund_transaction {
-    my ($self, $args) = @_;
-    $args->{method} = 'RefundTransaction';
-    $self->_do_request($args);
-}
-
 1;
 __END__
 
@@ -201,13 +156,15 @@ A pure object oriented interface to PayPal's NVP API (Name-Value Pair). A lot of
 Another difference with this module compared to Business::PayPal::NVP is that the keys may be passed as lowercase. Also, a response will return a WebService::PayPal::NVP::Response object where the response values are methods. Timestamps will automatically be converted to DateTime objects for your convenience.
 
 
-=head1 SYNTAX
+=head1 SYNOPSIS
 
     my $nvp = WebService::PayPal::NVP->new(
         user   => 'user.tld',
         pwd    => 'xxx',
         sig    => 'xxxxxxx',
         branch => 'sandbox',
+        # optional:
+        ua     => LWP::UserAgent->new( ... ),
     );
     
     my $res = $nvp->set_express_checkout({
@@ -254,28 +211,49 @@ Another difference with this module compared to Business::PayPal::NVP is that th
           for @{$res->errors};
     }
 
+=head1 ATTRIBUTES
+
+Upon creating an instance of WebService::PayPal::NVP, 3 attributes are mandatory, and there's a few you can set yourself
+
+=head2 Mandatory
+
+=head3 user
+
+Your PayPal username
+
+=head3 pass
+
+Your PayPal password
+
+=head3 sig
+
+Google API signature
+
+=head2 Optional
+
+=head3 url
+
+You might not need this, but if for some reason the URL for PayPal's NVP service changes and I can't update in time, you can set it yourself.
+
+=head3 branch
+
+By default, this will be set to sandbox. Once you want to go live, set the branch to 'live'. 
+It will also be sandbox unless you specify otherwise for obvious reasons..
+
+=head3 api_ver
+
+You can change the API version, but I'd recommend you leave it as this module was made for the version that is currently set!
+
+=head3 ua
+
+This attribute allows you to provide your own UserAgent.  This object must be of
+the L<LWP::UserAgent> family, so L<WWW::Mechanize> modules will also work.
+
+  my $nvp = WebService::PayPal::NVP->new( ua => LWP::UserAgent->new(...) );
+
 =head1 METHODS
 
-=head2 create_recurring_payments_profile( $HashRef )
-
-=head2 do_direct_payment( $HashRef )
-
-=head2 do_express_checkout_payment( $HashRef )
-
-=head2 get_express_checkout_details( $HashRef )
-
-=head2 manage_recurring_payments_profile_status( $HashRef )
-
-=head2 mass_pay( $HashRef )
-
-=head2 refund_transaction( $HashRef )
-
-=head2 set_express_checkout( $HashRef )
-
-=head2 ua( LWP::UserAgent->new( ... ) )
-
-This method allows you to provide your own UserAgent.  This object must be of
-the L<LWP::UserAgent> family, so L<WWW::Mechanize> modules will also work.
+Please see the role L<WebService::PayPal::NVP::Requests> for available PalPal methods
 
 =head1 TESTING
 
@@ -297,6 +275,10 @@ Brad Haywood <brad@geeksware.com>
 
 A lot of this module was taken from L<Business::PayPal::NVP> by Scott Wiersdorf. 
 It was only rewritten in order to work properly in L<Catalyst::Model::Adaptor>.
+
+=head2 THANKS
+
+I'd like to thank Olaf Alders for his contributions to this project!
 
 =head1 LICENSE
 
