@@ -56,9 +56,6 @@ sub _build_ua {
 sub _do_request {
     my ($self, $args) = @_;
 
-    my $req = HTTP::Request->new(POST => $self->url);
-    $req->content_type('application/x-www-form-urlencoded');
-
     my $authargs = {
         user      => $self->user,
         pwd       => $self->pwd,
@@ -69,8 +66,11 @@ sub _do_request {
 
     my $allargs = { %$authargs, %$args };
     my $content = $self->_build_content( $allargs );
-    $req->content($content);
-    my $res = $self->ua->request($req);
+    my $res = $self->ua->post(
+        $self->url,
+        'Content-Type' => 'application/x-www-form-urlencoded',
+        Content        => $content,
+    );
 
     unless ($res->code == 200) {
         $self->errors(["Failure: " . $res->code . ": " . $res->message]);
