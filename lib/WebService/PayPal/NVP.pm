@@ -2,6 +2,7 @@ package WebService::PayPal::NVP;
 
 use Moo;
 use DateTime;
+use Encode qw( decode );
 use LWP::UserAgent ();
 use MooX::Types::MooseLike::Base qw( InstanceOf );
 use URI::Escape qw/uri_escape uri_escape_utf8 uri_unescape/;
@@ -76,7 +77,7 @@ sub _do_request {
         return;
     }
 
-    my $resp = { map { uri_unescape($_) }
+    my $resp = { map { decode( 'UTF-8', uri_unescape($_) ) }
         map { split '=', $_, 2 }
             split '&', $res->content };
 
