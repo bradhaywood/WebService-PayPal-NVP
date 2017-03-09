@@ -8,7 +8,7 @@ use MooX::Types::MooseLike::Base qw( InstanceOf );
 use URI::Escape qw/uri_escape uri_escape_utf8 uri_unescape/;
 use WebService::PayPal::NVP::Response;
 
-our $VERSION = '0.004';
+our $VERSION = '0.005';
 
 has 'errors' => (
     is => 'rw',
