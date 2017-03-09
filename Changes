@@ -1,7 +1,8 @@
 Revision history for Perl module WebService::PayPal::NVP
 
  - Fix response parsing to decode all data UTF-8 (Dave Rolsky)
-
+ - Use UserAgent directly for POST requests (Olaf Alders)
+ 
 0.004 2015-02-23
  - Allow a custom UserAgent to be provided to constructor (Olaf Alders)
  - Add get_recurring_payments_profile_details() method (Olaf Alders)
