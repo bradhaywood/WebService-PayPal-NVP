@@ -1,5 +1,10 @@
 Revision history for Perl module WebService::PayPal::NVP
 
+{{$NEXT}}
+
+0.006     2017-03-13 16:51:00-04:00 America/Toronto
+ - Fix broken build
+
 0.005 2017-03-09
  - Fix response parsing to decode all data UTF-8 (Dave Rolsky)
  - Use UserAgent directly for POST requests (Olaf Alders)
