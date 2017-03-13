@@ -1,12 +1,12 @@
 # NAME
 
-WebService::PayPal::NVP
+WebService::PayPal::NVP - PayPal NVP API
 
 [![Build Status](https://travis-ci.org/bradhaywood/WebService-PayPal-NVP.png?branch=master)](https://travis-ci.org/bradhaywood/WebService-PayPal-NVP)
 
 # VERSION
 
-version 0.005
+version 0.006
 
 # SYNOPSIS
 
@@ -67,10 +67,6 @@ version 0.005
 
 A pure object oriented interface to PayPal's NVP API (Name-Value Pair). A lot of the logic in this module was taken from [Business::PayPal::NVP](https://metacpan.org/pod/Business::PayPal::NVP). I re-wrote it because it wasn't working with Catalyst adaptors and I couldn't save instances of it in Moose-type accessors. Otherwise it worked fine. So if you don't need that kind of support you should visit [Business::PayPal::NVP](https://metacpan.org/pod/Business::PayPal::NVP)!.
 Another difference with this module compared to Business::PayPal::NVP is that the keys may be passed as lowercase. Also, a response will return a WebService::PayPal::NVP::Response object where the response values are methods. Timestamps will automatically be converted to DateTime objects for your convenience.
-
-# NAME
-
-WebService::PayPal::NVP - PayPal NVP API
 
 # METHODS
 
@@ -143,10 +139,6 @@ It was only rewritten in order to work properly in [Catalyst::Model::Adaptor](ht
 ## THANKS
 
 A huge thanks to Olaf Alders (OALDERS) for all of his useful pull requests!
-
-# LICENSE
-
-You may distribute this code under the same terms as Perl itself.
 
 # AUTHOR
 

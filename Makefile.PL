@@ -32,7 +32,7 @@ my %WriteMakefileArgs = (
     "Test::RequiresInternet" => 0,
     "YAML::Syck" => 0
   },
-  "VERSION" => "0.005",
+  "VERSION" => "0.006",
   "test" => {
     "TESTS" => "t/*.t"
   }

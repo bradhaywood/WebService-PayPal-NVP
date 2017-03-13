@@ -60,10 +60,6 @@ listmethods: {
 1;
 __END__
 
-=head1 NAME
-
-WebService::PayPal::NVP::Response - PayPal NVP API response object
-
 =pod
 
 =head2 raw
@@ -88,3 +84,5 @@ errors.
 Returns true if C<errors()> is non-empty.
 
 =cut
+
+# ABSTRACT: PayPal NVP API response object

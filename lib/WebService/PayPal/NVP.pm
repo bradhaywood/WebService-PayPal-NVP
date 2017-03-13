@@ -8,8 +8,6 @@ use MooX::Types::MooseLike::Base qw( InstanceOf );
 use URI::Escape qw/uri_escape uri_escape_utf8 uri_unescape/;
 use WebService::PayPal::NVP::Response;
 
-our $VERSION = '0.005';
-
 has 'errors' => (
     is  => 'rw',
     isa => sub {
@@ -219,10 +217,6 @@ sub transaction_search {
 1;
 __END__
 
-=head1 NAME
-
-WebService::PayPal::NVP - PayPal NVP API
-
 =head1 DESCRIPTION
 
 A pure object oriented interface to PayPal's NVP API (Name-Value Pair). A lot of the logic in this module was taken from L<Business::PayPal::NVP>. I re-wrote it because it wasn't working with Catalyst adaptors and I couldn't save instances of it in Moose-type accessors. Otherwise it worked fine. So if you don't need that kind of support you should visit L<Business::PayPal::NVP>!.
@@ -356,8 +350,6 @@ It was only rewritten in order to work properly in L<Catalyst::Model::Adaptor>.
 
 A huge thanks to Olaf Alders (OALDERS) for all of his useful pull requests!
 
-=head1 LICENSE
-
-You may distribute this code under the same terms as Perl itself.
-
 =cut
+
+# ABSTRACT: PayPal NVP API
