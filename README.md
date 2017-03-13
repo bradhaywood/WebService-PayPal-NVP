@@ -10,6 +10,8 @@ version 0.005
 
 # SYNOPSIS
 
+    use feature qw( say );
+
     my $nvp = WebService::PayPal::NVP->new(
         user   => 'user.tld',
         pwd    => 'xxx',
@@ -53,7 +55,7 @@ version 0.005
         # the Response object will automatically detect if you have
         # live or sandbox and return the appropriate url for you
         if (my $redirect_user_to = $res->express_checkout_uri) {
-            $web_framework->redirect( $redirect_user_to );
+            ...;
         }
     }
     else {

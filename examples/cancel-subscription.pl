@@ -22,7 +22,7 @@ die 'auth.yml required' unless -f 'auth.yml';
 die 'usage: perl examples/cancel-subscription.pl [subscription_id]'
     unless @ARGV;
 
-my $config = LoadFile( 'auth.yml' );
+my $config = LoadFile('auth.yml');
 
 my $ua = LWP::UserAgent->new;
 debug_ua( $ua, 10 );
@@ -36,7 +36,8 @@ my $nvp = WebService::PayPal::NVP->new(
 );
 
 my $res = $nvp->manage_recurring_payments_profile_status(
-    {   profileid => shift @ARGV,
+    {
+        profileid => shift @ARGV,
         action    => 'cancel',
     }
 );

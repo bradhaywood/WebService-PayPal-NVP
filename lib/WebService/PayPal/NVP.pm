@@ -11,7 +11,7 @@ use WebService::PayPal::NVP::Response;
 our $VERSION = '0.005';
 
 has 'errors' => (
-    is => 'rw',
+    is  => 'rw',
     isa => sub {
         die "errors expects an array reference!\n"
             unless ref $_[0] eq 'ARRAY';
@@ -21,7 +21,7 @@ has 'errors' => (
 
 has 'ua' => (
     is      => 'ro',
-    isa     => InstanceOf['LWP::UserAgent'],
+    isa     => InstanceOf ['LWP::UserAgent'],
     builder => '_build_ua'
 );
 
@@ -29,13 +29,14 @@ has 'user' => ( is => 'rw', required => 1 );
 has 'pwd'  => ( is => 'rw', required => 1 );
 has 'sig'  => ( is => 'rw', required => 1 );
 has 'url'  => ( is => 'rw' );
-has 'branch' => ( is => 'rw', default => sub { 'sandbox' } );
+has 'branch'  => ( is => 'rw', default => sub { 'sandbox' } );
 has 'api_ver' => ( is => 'rw', default => sub { 51.0 } );
 
 sub BUILDARGS {
-    my ($class, %args) = @_;
+    my ( $class, %args ) = @_;
+
     # detect URL if it's missing
-    if (not $args{url}) {
+    if ( not $args{url} ) {
         $args{url} = "https://api-3t.sandbox.paypal.com/nvp"
             if $args{branch} eq 'sandbox';
 
@@ -45,6 +46,7 @@ sub BUILDARGS {
 
     return \%args;
 }
+
 sub _build_ua {
     my $self = shift;
 
@@ -54,43 +56,44 @@ sub _build_ua {
 }
 
 sub _do_request {
-    my ($self, $args) = @_;
+    my ( $self, $args ) = @_;
 
     my $authargs = {
         user      => $self->user,
         pwd       => $self->pwd,
         signature => $self->sig,
-        version   => $args->{version}||$self->api_ver,
-        subject   => $args->{subject}||'',
+        version   => $args->{version} || $self->api_ver,
+        subject   => $args->{subject} || '',
     };
 
     my $allargs = { %$authargs, %$args };
-    my $content = $self->_build_content( $allargs );
-    my $res = $self->ua->post(
+    my $content = $self->_build_content($allargs);
+    my $res     = $self->ua->post(
         $self->url,
         'Content-Type' => 'application/x-www-form-urlencoded',
         Content        => $content,
     );
 
-    unless ($res->code == 200) {
-        $self->errors(["Failure: " . $res->code . ": " . $res->message]);
+    unless ( $res->code == 200 ) {
+        $self->errors( [ "Failure: " . $res->code . ": " . $res->message ] );
         return;
     }
 
-    my $resp = { map { decode( 'UTF-8', uri_unescape($_) ) }
-        map { split '=', $_, 2 }
-            split '&', $res->content };
+    my $resp = {
+        map { decode( 'UTF-8', uri_unescape($_) ) }
+            map { split '=', $_, 2 }
+            split '&', $res->content
+    };
 
     my $res_object = WebService::PayPal::NVP::Response->new(
         branch => $self->branch,
-        raw => $resp
+        raw    => $resp
     );
-;
-    if ($resp->{ACK} ne 'Success') {
-        $res_object->errors([]);
+    if ( $resp->{ACK} ne 'Success' ) {
+        $res_object->errors( [] );
         my $i = 0;
-        while(my $err = $resp->{"L_LONGMESSAGE${i}"}) {
-            push @{$res_object->errors},
+        while ( my $err = $resp->{"L_LONGMESSAGE${i}"} ) {
+            push @{ $res_object->errors },
                 $resp->{"L_LONGMESSAGE${i}"};
             $i += 1;
         }
@@ -104,21 +107,21 @@ sub _do_request {
     {
         no strict 'refs';
         no warnings 'redefine';
-        foreach my $key (keys %$resp) {
+        foreach my $key ( keys %$resp ) {
             my $val    = $resp->{$key};
             my $lc_key = lc $key;
-            if ($lc_key eq 'timestamp') {
-                if ($val =~ /(\d+)-(\d+)-(\d+)T(\d+):(\d+):(\d+)Z/) {
-                    my ($day, $month, $year, $hour, $min, $sec)
-                     = ($3, $2, $1, $4, $5, $6);
+            if ( $lc_key eq 'timestamp' ) {
+                if ( $val =~ /(\d+)-(\d+)-(\d+)T(\d+):(\d+):(\d+)Z/ ) {
+                    my ( $day, $month, $year, $hour, $min, $sec )
+                        = ( $3, $2, $1, $4, $5, $6 );
 
                     $val = DateTime->new(
-                        year    => $year,
-                        month   => $month,
-                        day     => $day,
-                        hour    => $hour,
-                        minute  => $min,
-                        second  => $sec,
+                        year   => $year,
+                        month  => $month,
+                        day    => $day,
+                        hour   => $hour,
+                        minute => $min,
+                        second => $sec,
                     );
                 }
             }
@@ -131,78 +134,78 @@ sub _do_request {
 }
 
 sub _build_content {
-    my ($self, $args) = @_;
+    my ( $self, $args ) = @_;
     my @args;
-    for my $key (keys %$args) {
+    for my $key ( keys %$args ) {
         $args->{$key} = defined $args->{$key} ? $args->{$key} : '';
         push @args,
-            uc(uri_escape($key)) . '=' . uri_escape_utf8($args->{$key});
+            uc( uri_escape($key) ) . '=' . uri_escape_utf8( $args->{$key} );
     }
 
-    return (join '&', @args) || '';
+    return ( join '&', @args ) || '';
 }
 
 sub has_errors {
     my $self = shift;
-    return scalar @{$self->errors} > 0;
+    return scalar @{ $self->errors } > 0;
 }
 
 sub set_express_checkout {
-    my ($self, $args) = @_;
+    my ( $self, $args ) = @_;
     $args->{method} = 'SetExpressCheckout';
     $self->_do_request($args);
 }
 
 sub do_express_checkout_payment {
-    my ($self, $args) = @_;
+    my ( $self, $args ) = @_;
     $args->{method} = 'DoExpressCheckoutPayment';
     $self->_do_request($args);
 }
 
 sub get_express_checkout_details {
-    my ($self, $args) = @_;
+    my ( $self, $args ) = @_;
     $args->{method} = 'GetExpressCheckoutDetails';
     $self->_do_request($args);
 }
 
 sub do_direct_payment {
-    my ($self, $args) = @_;
+    my ( $self, $args ) = @_;
     $args->{method} = 'DoDirectPayment';
     $self->_do_request($args);
 }
 
 sub create_recurring_payments_profile {
-    my ($self, $args) = @_;
+    my ( $self, $args ) = @_;
     $args->{method} = 'CreateRecurringPaymentsProfile';
     $self->_do_request($args);
 }
 
 sub get_recurring_payments_profile_details {
-    my ($self, $args) = @_;
+    my ( $self, $args ) = @_;
     $args->{method} = 'GetRecurringPaymentsProfileDetails';
     $self->_do_request($args);
 }
 
 sub get_transaction_details {
-    my ($self, $args) = @_;
+    my ( $self, $args ) = @_;
     $args->{method} = 'GetTransactionDetails';
     $self->_do_request($args);
 }
 
 sub manage_recurring_payments_profile_status {
-    my ($self, $args) = @_;
+    my ( $self, $args ) = @_;
     $args->{method} = 'ManageRecurringPaymentsProfileStatus';
     $self->_do_request($args);
 }
 
 sub mass_pay {
-    my ($self, $args) = @_;
+    my ( $self, $args ) = @_;
     $args->{method} = 'MassPay';
     $self->_do_request($args);
 }
 
 sub refund_transaction {
-    my ($self, $args) = @_;
+    my ( $self, $args ) = @_;
     $args->{method} = 'RefundTransaction';
     $self->_do_request($args);
 }
@@ -227,6 +230,8 @@ Another difference with this module compared to Business::PayPal::NVP is that th
 
 
 =head1 SYNOPSIS
+
+    use feature qw( say );
 
     my $nvp = WebService::PayPal::NVP->new(
         user   => 'user.tld',
@@ -271,7 +276,7 @@ Another difference with this module compared to Business::PayPal::NVP is that th
         # the Response object will automatically detect if you have
         # live or sandbox and return the appropriate url for you
         if (my $redirect_user_to = $res->express_checkout_uri) {
-            $web_framework->redirect( $redirect_user_to );
+            ...;
         }
     }
     else {

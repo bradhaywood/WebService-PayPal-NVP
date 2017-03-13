@@ -13,7 +13,7 @@ SKIP: {
         skip 'auth.yml file missing with PayPal API credentials', 2;
     }
 
-    my $config = LoadFile( 'auth.yml' );
+    my $config = LoadFile('auth.yml');
     my $nvp    = WebService::PayPal::NVP->new(
         api_ver => 95,
         branch  => $config->{branch},
@@ -26,7 +26,9 @@ SKIP: {
         { profileid => 'foo' } );
 
     ok !$res->success, 'We know this will fail';
-    ok( (          $res->errors->[0] eq 'The profile ID is invalid'
+    ok(
+        (
+                   $res->errors->[0] eq 'The profile ID is invalid'
                 || $res->errors->[0] eq
                 'Subscription Profiles not supported by Recurring Payment APIs'
         ),

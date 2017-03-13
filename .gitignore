@@ -1,3 +1,5 @@
 auth.yml
+.build/
 .*sw*
+.tidyall.d/
 WebService-PayPal-NVP*
